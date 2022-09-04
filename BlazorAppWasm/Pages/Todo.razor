@@ -1,0 +1,52 @@
+﻿@page "/todo"
+@using BlazorAppWasm.Models;
+
+<div class="container">
+
+    <h3>Todo</h3>
+
+    <div class="row">
+        <div class="col-md-12 mb-2">
+            <ul>
+                @foreach(var todo in todoItems)
+                {
+                    <li>
+                        @todo.Title - @todo.Description
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <button @onclick="ShowModal" class="btn btn-primary">Add Todo</button>
+</div>
+ 
+
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; }
+    private List<TodoItem> todoItems = new List<TodoItem>();
+
+    async Task ShowModal()
+    {
+        var formModal = Modal.Show<AddTodoDialog>("Add Todo");
+        var result = await formModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else
+        {
+            var res = (TodoItem)result.Data;
+            var todo = new TodoItem()
+            {
+                Title = res.Title,
+                Description = res.Description
+            };
+
+            todoItems.Add(todo);            
+        }
+    }
+
+}

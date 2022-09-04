@@ -1,0 +1,43 @@
+﻿@using BlazorAppWasm.Models
+<div class="container">
+ 
+    <div class="row">
+        <div class="mb-2">
+            <input type="text" class="form-control" @bind="todoTitle" placeholder="Enter Title"/>
+        </div>        
+    </div>
+
+    <div class="row">
+        <div class="mb-2">
+            <input type="text" class="form-control" @bind="todoDescription" placeholder="Enter Description"/>
+        </div>        
+    </div>
+
+    <div class="row">
+        <div class="mb-2">
+            <button class="btn btn-primary" @onclick="AddTodo">Add</button>
+        </div>        
+    </div>
+
+
+</div>
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    private TodoItem? todoItem;
+    private string? todoTitle;
+    private string? todoDescription;
+    private Boolean openDialog = false;
+
+    private void AddTodo()
+    {
+        if (!String.IsNullOrWhiteSpace(todoTitle))
+        {
+            todoItem = new TodoItem() { Title = todoTitle, Description = todoDescription };
+            todoTitle = String.Empty;
+            todoDescription = String.Empty;
+            ModalInstance.CloseAsync(ModalResult.Ok<TodoItem>(todoItem));
+        }
+    }
+
+      
+}
