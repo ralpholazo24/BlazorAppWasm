@@ -19,13 +19,12 @@
         </div>        
     </div>
 
-
 </div>
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
     private TodoItem? todoItem;
-    private string? todoTitle;
-    private string? todoDescription;
+    private string? todoTitle = String.Empty;
+    private string? todoDescription = String.Empty;
     private Boolean openDialog = false;
 
     private void AddTodo()
@@ -33,11 +32,7 @@
         if (!String.IsNullOrWhiteSpace(todoTitle))
         {
             todoItem = new TodoItem() { Title = todoTitle, Description = todoDescription };
-            todoTitle = String.Empty;
-            todoDescription = String.Empty;
             ModalInstance.CloseAsync(ModalResult.Ok<TodoItem>(todoItem));
         }
     }
-
-      
 }

@@ -5,31 +5,55 @@
 
     <h3>Todo</h3>
 
+    <button @onclick="ShowAddCategoryModal" class="btn btn-primary btn-sm mb-3">Add Category</button>
+
+    
     <div class="row">
-        <div class="col-md-12 mb-2">
+        <div class="col-md-12">
             <ul>
-                @foreach(var todo in todoItems)
+                @foreach(var category in categories)
                 {
-                    <li>
-                        @todo.Title - @todo.Description
+                    var todos = todoItems.Where(e => e.CategoryId == category.Id).ToList();
+                    var taskCounts = todos.Count();
+
+                    <li class="mb-4">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <h4>@category.Name (@taskCounts Tasks)</h4>                            
+                          </div>
+                          <div class="col-md-6">
+                              <button @onclick="@(() => ShowAddTodoModal(category))" class="btn btn-primary btn-sm mb-2">Add Task</button>
+                          </div>                          
+                        </div>
+                                                       
+                        @foreach(var todo in todos)
+                        {   
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                @todo.Title
+                                </label>
+                            </div>                                                                                
+                        }                      
                     </li>
                 }
             </ul>
         </div>
     </div>
-
-    <button @onclick="ShowModal" class="btn btn-primary">Add Todo</button>
+    
 </div>
  
 
 
 @code {
     [CascadingParameter] public IModalService Modal { get; set; }
+    private List<Category> categories = new List<Category>();
     private List<TodoItem> todoItems = new List<TodoItem>();
 
-    async Task ShowModal()
+
+    async Task ShowAddTodoModal(Category category)
     {
-        var formModal = Modal.Show<AddTodoDialog>("Add Todo");
+        var formModal = Modal.Show<AddTodoDialog>($"Add {category.Name}");
         var result = await formModal.Result;
 
         if (result.Cancelled)
@@ -41,11 +65,35 @@
             var res = (TodoItem)result.Data;
             var todo = new TodoItem()
             {
+                CategoryId = category.Id,
                 Title = res.Title,
                 Description = res.Description
             };
 
             todoItems.Add(todo);            
+        }
+    }
+
+
+    async Task ShowAddCategoryModal()
+    {
+        var formModal = Modal.Show<AddCategoryDialog>("Add Category");
+        var result = await formModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else
+        {
+            var res = (Category)result.Data;
+            var category = new Category()
+            {
+                Id = res.Id,
+                Name = res.Name
+            };
+
+            categories.Add(category);            
         }
     }
 

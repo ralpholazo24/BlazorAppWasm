@@ -1,0 +1,31 @@
+﻿@using BlazorAppWasm.Models
+<div class="container"> 
+    <div class="row">
+        <div class="mb-2">
+            <input type="text" class="form-control" @bind="categoryName" placeholder="Enter Category"/>
+        </div>        
+    </div>
+     
+
+    <div class="row">
+        <div class="mb-2">
+            <button class="btn btn-primary" @onclick="AddCategory">Add</button>
+        </div>        
+    </div>
+
+</div>
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+    private Category? category;
+    private string? categoryName = String.Empty;
+    private Boolean openDialog = false;
+
+    private void AddCategory()
+    {
+        if (!String.IsNullOrWhiteSpace(categoryName))
+        {
+            category = new Category() { Id = Guid.NewGuid(), Name = categoryName };
+            ModalInstance.CloseAsync(ModalResult.Ok<Category>(category));
+        }
+    }
+}
