@@ -62,3 +62,34 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+.category-container {
+    position: relative;    
+}
+
+
+.category-item {
+    width: 180px;
+    height: 120px;
+    background-color: #383B53;
+    border-radius: 10px;
+}
+
+.category-name {
+    font-size: 17px;
+    font-weight: bold;
+    color: white;
+}
+
+.category-task-count {
+    font-size: 13px;
+    font-weight: normal;
+    color: white;
+}
+
+.category-item:hover {
+    background-color: #66717E;
+}
+
+

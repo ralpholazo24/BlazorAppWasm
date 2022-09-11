@@ -1,55 +1,72 @@
-﻿@page "/todo"
+﻿@page "/"
 @using BlazorAppWasm.Models;
+
 
 <div class="container">
 
-    <h3>Todo</h3>
+    <h3>Categories</h3>
 
-    <button @onclick="ShowAddCategoryModal" class="btn btn-primary btn-sm mb-3">Add Category</button>
-
-    
     <div class="row">
-        <div class="col-md-12">
-            <ul>
-                @foreach(var category in categories)
-                {
-                    var todos = todoItems.Where(e => e.CategoryId == category.Id).ToList();
-                    var taskCounts = todos.Count();
+        <div class="col-md-12 d-flex flex-row overflow-auto">
+            @foreach(var category in categories)
+            {
+                var taskCount = todoItems.Where(e => e.CategoryId == category.Id).Count();
 
-                    <li class="mb-4">
-                        <div class="row">
-                          <div class="col-md-6">
-                            <h4>@category.Name (@taskCounts Tasks)</h4>                            
-                          </div>
-                          <div class="col-md-6">
-                              <button @onclick="@(() => ShowAddTodoModal(category))" class="btn btn-primary btn-sm mb-2">Add Task</button>
-                          </div>                          
+                <div class="category-container" @onclick="@(() => ShowAddTodoModal(category))">
+                    <div class="p-2 bg-opacity-50 m-2 category-item">
+                        <div class="category-name">
+                            <label>@category.Name</label>
                         </div>
-                                                       
-                        @foreach(var todo in todos)
-                        {   
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                @todo.Title
-                                </label>
-                            </div>                                                                                
-                        }                      
-                    </li>
-                }
-            </ul>
+                        <div class="category-task-count">
+                            <label>@taskCount Task(s)</label>
+                        </div>                        
+                    </div>                                       
+                </div>
+            }    
+            
+              <div class="category-container" @onclick="ShowAddCategoryModal">
+                    <div class="p-2 bg-opacity-50 m-2 category-item">
+                        <div class="category-name">
+                            <label>Add Category</label>
+                        </div>                      
+                    </div>                                       
+                </div>
         </div>
     </div>
-    
-</div>
- 
 
+    <div class="row">
+        <div class="col-md-12 mt-3">            
+            <h4>Task(s)</h4>
+            <hr />
+        </div>      
+    </div>
+                                                
+    @foreach(var todo in todoItems)
+    {
+        <div class="row">
+            <div class="col-md-12 p-1 m-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                    @todo.Task
+                    </label>
+                </div>                              
+            </div>
+        </div>
+    }                           
+</div>
 
 @code {
     [CascadingParameter] public IModalService Modal { get; set; }
     private List<Category> categories = new List<Category>();
     private List<TodoItem> todoItems = new List<TodoItem>();
 
+    public Todo()
+    {
+        FakeData fakeData = new FakeData();
+        categories = fakeData.GetCategory();
+        todoItems = fakeData.GetTodoItems(categories);
+    }
 
     async Task ShowAddTodoModal(Category category)
     {
@@ -66,8 +83,7 @@
             var todo = new TodoItem()
             {
                 CategoryId = category.Id,
-                Title = res.Title,
-                Description = res.Description
+                Task = res.Task,
             };
 
             todoItems.Add(todo);            

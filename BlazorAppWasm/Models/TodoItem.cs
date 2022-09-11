@@ -2,10 +2,9 @@
 {
     public class TodoItem
     {
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
         public Guid CategoryId { get; set; }
-        public string? Title { get; set; }
-        public string? Description { get; set; }
+        public string? Task { get; set; }
         public bool IsDone { get; set; }
     }
 

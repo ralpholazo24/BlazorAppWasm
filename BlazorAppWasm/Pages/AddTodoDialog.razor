@@ -3,16 +3,10 @@
  
     <div class="row">
         <div class="mb-2">
-            <input type="text" class="form-control" @bind="todoTitle" placeholder="Enter Title"/>
+            <input type="text" class="form-control" @bind="todoTask" placeholder="Enter Task"/>
         </div>        
     </div>
-
-    <div class="row">
-        <div class="mb-2">
-            <input type="text" class="form-control" @bind="todoDescription" placeholder="Enter Description"/>
-        </div>        
-    </div>
-
+    
     <div class="row">
         <div class="mb-2">
             <button class="btn btn-primary" @onclick="AddTodo">Add</button>
@@ -23,15 +17,13 @@
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
     private TodoItem? todoItem;
-    private string? todoTitle = String.Empty;
-    private string? todoDescription = String.Empty;
-    private Boolean openDialog = false;
+    private string? todoTask = String.Empty;
 
     private void AddTodo()
     {
-        if (!String.IsNullOrWhiteSpace(todoTitle))
+        if (!String.IsNullOrWhiteSpace(todoTask))
         {
-            todoItem = new TodoItem() { Title = todoTitle, Description = todoDescription };
+            todoItem = new TodoItem() { Task = todoTask };
             ModalInstance.CloseAsync(ModalResult.Ok<TodoItem>(todoItem));
         }
     }
